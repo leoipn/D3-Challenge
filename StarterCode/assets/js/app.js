@@ -61,6 +61,17 @@ function renderAxes(newXScale, xAxis) {
   return xAxis;
 }
 
+// function used for updating yAxis var upon click on axis label
+function renderYAxes(newYScale, yAxis) {
+  var leftAxis = d3.axisLeft(newYScale);
+
+  yAxis.transition()
+    .duration(1000)
+    .call(leftAxis);
+
+  return yAxis;
+}
+
 // function used for updating circles group with a transition to
 // new circles
 function renderCircles(circlesGroup, newXScale, chosenXAxis) {
@@ -77,6 +88,24 @@ function renderText(textGroup, newXScale, chosenXAxis) {
   textGroup.transition()
     .duration(1000)
     .attr("x", d => newXScale(d[chosenXAxis]));
+
+  return textGroup;
+}
+
+function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
+
+  circlesGroup.transition()
+    .duration(1000)
+    .attr("cy", d => newYScale(d[chosenYAxis]));
+
+  return circlesGroup;
+}
+
+function renderYText(textGroup, newYScale, chosenYAxis) {
+
+  textGroup.transition()
+    .duration(1000)
+    .attr("y", d => newYScale(d[chosenYAxis]));
 
   return textGroup;
 }
@@ -141,7 +170,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     .call(bottomAxis);
 
   // append y axis
-  chartGroup.append("g")
+  var yAxis = chartGroup.append("g")
     .call(leftAxis);
 
   // append initial circles
@@ -301,59 +330,60 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
       var value = d3.select(this).attr("value");
 
       console.log(value);
+      console.log(chosenYAxis);
 
       if (value !== chosenYAxis) {
 
-        // replaces chosenXAxis with value
+        // replaces chosenYAxis with value
         chosenYAxis = value;
 
         // functions here found above csv import
         // updates y scale for new data
-        yLinearScale = xScale(healthData, chosenXAxis);
+        yLinearScale = yScale(healthData, chosenYAxis);
 
-        // updates x axis with transition
-        xAxis = renderAxes(xLinearScale, xAxis);
+        // updates y axis with transition
+        yAxis = renderYAxes(yLinearScale, yAxis);
 
-        // updates circles with new x values
-        circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+        // updates circles with new y values
+        circlesGroup = renderYCircles(circlesGroup, yLinearScale, chosenYAxis);
         
-        // updates circles texts with new x values
-        textGroup = renderText(textGroup, xLinearScale, chosenXAxis);
+        // updates circles texts with new y values
+        textGroup = renderYText(textGroup, yLinearScale, chosenYAxis);
 
         // updates tooltips with new info
         circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
         // changes classes to change bold text
-        if (chosenXAxis === "age") {
-          ageLabel
+        if (chosenYAxis === "smoke") {
+          smokeLabel
             .classed("active", true)
             .classed("inactive", false);
-          povertyLabel
+          healthLabel
             .classed("active", false)
             .classed("inactive", true);
-          houseHoldLabel
+          obeseLabel
           .classed("active", false)
           .classed("inactive", true);
         } 
-        else if (chosenXAxis === "income"){
-          ageLabel
+        else if (chosenYAxis === "obese"){
+          smokeLabel
             .classed("active", false)
             .classed("inactive", true);
-          povertyLabel
+          healthLabel
             .classed("active", false)
             .classed("inactive", true);
-          houseHoldLabel
+          obeseLabel
           .classed("active", true)
           .classed("inactive", false);
         }
         else {
-          ageLabel
+          smokeLabel
             .classed("active", false)
             .classed("inactive", true);
-          povertyLabel
+          healthLabel
             .classed("active", true)
             .classed("inactive", false);
-          houseHoldLabel
+          obeseLabel
             .classed("active", false)
             .classed("inactive", true);
         }
@@ -364,11 +394,3 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
 }).catch(function(error) {
   console.log(error);
 });
-
-
-var povertyLabel
-var ageLabel
-var houseHoldLabel
-var healthLabel
-var smokeLabel
-var obeseLabel
