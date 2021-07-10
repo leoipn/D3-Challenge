@@ -76,7 +76,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 
   var toolTip = d3.tip()
     .attr("class", "d3-tip")
-    .offset([40, -60])
+    .offset([0, 0])
     .html(function(d) {
       return (`${d.state}<br>${label} ${d[chosenXAxis]}`);
     });
@@ -161,21 +161,44 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     .classed("active", true)
     .text("In Poverty(%)");
 
-  var albumsLabel = labelsGroup.append("text")
+  var ageLabel = labelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 40)
     .attr("value", "age") // value to grab for event listener
     .classed("inactive", true)
     .text("Age(Median)");
 
+  var houseHoldLabel = labelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 60)
+    .attr("value", "income") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Household Income(Median)");
+
   // append y axis
-  chartGroup.append("text")
+  var healthLabel = chartGroup.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left)
+    .attr("y", 50 - margin.left)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .classed("active", true)
     .text("Lacks Healthcare(%)");
+
+    var smokeLabel = chartGroup.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 25 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .classed("inactive", true)
+    .text("Smoke(%)");
+
+    var obeseLabel = chartGroup.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .classed("inactive", true)
+    .text("Obese(%)");
 
   // updateToolTip function above csv import
   var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
