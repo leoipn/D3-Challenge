@@ -354,7 +354,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
         circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
         // changes classes to change bold text
-        if (chosenYAxis === "smoke") {
+        if (chosenYAxis === "smokes") {
           smokeLabel
             .classed("active", true)
             .classed("inactive", false);
@@ -365,7 +365,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
           .classed("active", false)
           .classed("inactive", true);
         } 
-        else if (chosenYAxis === "obese"){
+        else if (chosenYAxis === "obesity"){
           smokeLabel
             .classed("active", false)
             .classed("inactive", true);
