@@ -230,23 +230,48 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
 
         // changes classes to change bold text
         if (chosenXAxis === "age") {
-          albumsLabel
+          ageLabel
             .classed("active", true)
             .classed("inactive", false);
           povertyLabel
             .classed("active", false)
             .classed("inactive", true);
+          houseHoldLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        } 
+        else if (chosenXAxis === "income"){
+          ageLabel
+            .classed("active", false)
+            .classed("inactive", true);
+          povertyLabel
+            .classed("active", false)
+            .classed("inactive", true);
+          houseHoldLabel
+          .classed("active", true)
+          .classed("inactive", false);
         }
         else {
-          albumsLabel
+          ageLabel
             .classed("active", false)
             .classed("inactive", true);
           povertyLabel
             .classed("active", true)
             .classed("inactive", false);
+          houseHoldLabel
+            .classed("active", false)
+            .classed("inactive", true);
         }
       }
     });
 }).catch(function(error) {
   console.log(error);
 });
+
+
+var povertyLabel
+var ageLabel
+var houseHoldLabel
+var healthLabel
+var smokeLabel
+var obeseLabel
