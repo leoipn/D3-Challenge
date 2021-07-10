@@ -40,6 +40,16 @@ function xScale(healthData, chosenXAxis) {
 
 }
 
+// function used for updating x-scale var upon click on axis label
+function yScale(healthData, chosenYAxis) {
+  // create scales
+  var yLinearScale = d3.scaleLinear()
+    .domain([0, d3.max(healthData, d => d[chosenYAxis])])
+    .range([height, 0]);
+
+    return yLinearScale;
+}
+
 // function used for updating xAxis var upon click on axis label
 function renderAxes(newXScale, xAxis) {
   var bottomAxis = d3.axisBottom(newXScale);
@@ -118,9 +128,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
   var xLinearScale = xScale(healthData, chosenXAxis);
 
   // Create y scale function
-  var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(healthData, d => d.healthcare)])
-    .range([height, 0]);
+  var yLinearScale = yScale(healthData, chosenYAxis);
 
   // Create initial axis functions
   var bottomAxis = d3.axisBottom(xLinearScale);
@@ -286,7 +294,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     });
 
 
-  // x axis labels event listener
+  // y axis labels event listener
   yLabelsGroup.selectAll("text")
     .on("click", function() {
       // get value of selection
@@ -294,16 +302,14 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
 
       console.log(value);
 
-      if (value !== chosenXAxis) {
+      if (value !== chosenYAxis) {
 
         // replaces chosenXAxis with value
-        chosenXAxis = value;
-
-        // console.log(chosenXAxis)
+        chosenYAxis = value;
 
         // functions here found above csv import
-        // updates x scale for new data
-        xLinearScale = xScale(healthData, chosenXAxis);
+        // updates y scale for new data
+        yLinearScale = xScale(healthData, chosenXAxis);
 
         // updates x axis with transition
         xAxis = renderAxes(xLinearScale, xAxis);
