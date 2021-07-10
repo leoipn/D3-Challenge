@@ -111,27 +111,41 @@ function renderYText(textGroup, newYScale, chosenYAxis) {
 }
 
 // function used for updating circles group with new tooltip
-function updateToolTip(chosenXAxis, circlesGroup) {
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
-  var label;
+  var xlabel;
+  var ylabel;
+
   if (chosenXAxis === "poverty") {
-    label = "Poverty:";
+    xlabel = "Poverty:";
+  }
+  else if(chosenXAxis === "age"){
+    xlabel = "Age:"
   }
   else {
-    label = "# of Albums:";
+    xlabel = "Income:";
+  }
+
+  if (chosenYAxis === "healthcare") {
+    ylabel = "Healthcare:";
+  }
+  else if(chosenYAxis === "smokes"){
+    ylabel = "Smokes:"
+  }
+  else {
+    ylabel = "Obesity:";
   }
 
   var toolTip = d3.tip()
     .attr("class", "d3-tip")
     .offset([0, 0])
     .html(function(d) {
-      return (`${d.state}<br>${label} ${d[chosenXAxis]}`);
+      return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}`);
     });
 
   circlesGroup.call(toolTip);
 
   circlesGroup.on("mouseover", function(data) {
-    console.log(data);
     toolTip.show(data);
   })
     // onmouseout event
@@ -252,7 +266,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     .text("Obese(%)");
 
   // updateToolTip function above csv import
-  var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+  var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
   // x axis labels event listener
   labelsGroup.selectAll("text")
@@ -283,7 +297,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
         textGroup = renderText(textGroup, xLinearScale, chosenXAxis);
 
         // updates tooltips with new info
-        circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
         // changes classes to change bold text
         if (chosenXAxis === "age") {
@@ -351,7 +365,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
         textGroup = renderYText(textGroup, yLinearScale, chosenYAxis);
 
         // updates tooltips with new info
-        circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
         // changes classes to change bold text
         if (chosenYAxis === "smokes") {
