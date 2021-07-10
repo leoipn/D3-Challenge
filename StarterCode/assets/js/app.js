@@ -162,6 +162,9 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
   var labelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
+  var yLabelsGroup = chartGroup.append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
   var povertyLabel = labelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 20)
@@ -184,26 +187,29 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     .text("Household Income(Median)");
 
   // append y axis
-  var healthLabel = chartGroup.append("text")
+  var healthLabel = yLabelsGroup.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", 50 - margin.left)
+    .attr("y", -50 - margin.left)
     .attr("x", 0 - (height / 2))
+    .attr("value", "healthcare")
     .attr("dy", "1em")
     .classed("active", true)
     .text("Lacks Healthcare(%)");
 
-    var smokeLabel = chartGroup.append("text")
+    var smokeLabel = yLabelsGroup.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", 25 - margin.left)
+    .attr("y", -75 - margin.left)
     .attr("x", 0 - (height / 2))
+    .attr("value", "smokes")
     .attr("dy", "1em")
     .classed("inactive", true)
     .text("Smoke(%)");
 
-    var obeseLabel = chartGroup.append("text")
+    var obeseLabel = yLabelsGroup.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left)
+    .attr("y", -100 - margin.left)
     .attr("x", 0 - (height / 2))
+    .attr("value", "obesity")
     .attr("dy", "1em")
     .classed("inactive", true)
     .text("Obese(%)");
@@ -216,6 +222,9 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     .on("click", function() {
       // get value of selection
       var value = d3.select(this).attr("value");
+
+      console.log(value);
+
       if (value !== chosenXAxis) {
 
         // replaces chosenXAxis with value
@@ -275,6 +284,77 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
         }
       }
     });
+
+
+  // x axis labels event listener
+  yLabelsGroup.selectAll("text")
+    .on("click", function() {
+      // get value of selection
+      var value = d3.select(this).attr("value");
+
+      console.log(value);
+
+      if (value !== chosenXAxis) {
+
+        // replaces chosenXAxis with value
+        chosenXAxis = value;
+
+        // console.log(chosenXAxis)
+
+        // functions here found above csv import
+        // updates x scale for new data
+        xLinearScale = xScale(healthData, chosenXAxis);
+
+        // updates x axis with transition
+        xAxis = renderAxes(xLinearScale, xAxis);
+
+        // updates circles with new x values
+        circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+        
+        // updates circles texts with new x values
+        textGroup = renderText(textGroup, xLinearScale, chosenXAxis);
+
+        // updates tooltips with new info
+        circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+
+        // changes classes to change bold text
+        if (chosenXAxis === "age") {
+          ageLabel
+            .classed("active", true)
+            .classed("inactive", false);
+          povertyLabel
+            .classed("active", false)
+            .classed("inactive", true);
+          houseHoldLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        } 
+        else if (chosenXAxis === "income"){
+          ageLabel
+            .classed("active", false)
+            .classed("inactive", true);
+          povertyLabel
+            .classed("active", false)
+            .classed("inactive", true);
+          houseHoldLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        }
+        else {
+          ageLabel
+            .classed("active", false)
+            .classed("inactive", true);
+          povertyLabel
+            .classed("active", true)
+            .classed("inactive", false);
+          houseHoldLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        }
+      }
+    });
+    
+    
 }).catch(function(error) {
   console.log(error);
 });
