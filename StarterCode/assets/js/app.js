@@ -75,8 +75,8 @@ function updateToolTip(chosenXAxis, circlesGroup) {
   }
 
   var toolTip = d3.tip()
-    .attr("class", "tooltip")
-    .offset([80, -60])
+    .attr("class", "d3-tip")
+    .offset([40, -60])
     .html(function(d) {
       return (`${d.state}<br>${label} ${d[chosenXAxis]}`);
     });
@@ -84,6 +84,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
   circlesGroup.call(toolTip);
 
   circlesGroup.on("mouseover", function(data) {
+    console.log(data);
     toolTip.show(data);
   })
     // onmouseout event
@@ -137,8 +138,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d.healthcare))
     .attr("r", 8)
-    .attr("fill", "blue")
-    .attr("opacity", ".5");
+    .attr("class","stateCircle");
 
     chartGroup.append("g").selectAll("text")
     .data(healthData)
@@ -148,10 +148,7 @@ d3.csv("assets/data/data.csv").then(function(healthData, err) {
     .attr("x", d => xLinearScale(d.poverty))
     .attr("y", d => yLinearScale(d.healthcare))
     .attr("dy", ".4em")
-    .attr("fill", "#ffffff")
-    .attr("text-anchor", "middle")  
-    .style("font-size", "8px")
-    .style("font-weight", "bold");
+    .attr("class","stateText");
 
   // Create group for two x-axis labels
   var labelsGroup = chartGroup.append("g")
